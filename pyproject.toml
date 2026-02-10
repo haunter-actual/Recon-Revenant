@@ -4,18 +4,23 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "recon-revenant"
-version = "0.1.0"
-description = "Privacy-safe Linux and Windows reconnaissance and box decomposition tool"
+version = "0.3.0"
+description = "Privacy-safe Linux and Windows reconnaissance reasoning tool"
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "MIT" }
+license = "MIT"
 
 authors = [
-  { name = "haunter: haunter-actual@outlook.com" }
+  { name = "haunter - haunter-actual@outlook.com / https://haunter-actual.github.io" }
 ]
 
 dependencies = []
 
 [project.scripts]
 recon-revenant = "reconrevenant.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["reconrevenant*"]
+exclude = ["tests*", "testdata*"]
 
