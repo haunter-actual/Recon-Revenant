@@ -1,0 +1,4 @@
+SeImpersonatePrivilege Enabled
+unquoted service path
+AutoLogon
+Domain: TEST
