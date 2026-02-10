@@ -6,7 +6,7 @@ for Linux and Windows targets.
 ## Install (pipx)
 
 ```bash
-pipx install git+https://github.com/<your-username>/recon-revenant.git
+pipx install git+https://github.com/haunter-actual/recon-revenant.git
 ```
 
 ## Usage
