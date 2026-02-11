@@ -5,21 +5,21 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "recon-revenant"
 version = "0.4.0"
-description = "Privacy-safe Linux and Windows reconnaissance reasoning tool"
+description = "Offline reconnaissance reasoning engine with optional local AI"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 
 authors = [
-  { name = "haunter", email = "haunter-actual@outlook.com"  }
+  { name = "haunter-actual", email = "haunter-actual@outlook.com" }
 ]
+
+dependencies = []
 
 [project.urls]
 Homepage = "https://haunter-actual.github.io"
 Source = "https://github.com/haunter-actual/recon-revenant"
 LinkedIn = "https://www.linkedin.com/in/gsmaciel"
-
-dependencies = []
 
 [project.scripts]
 recon-revenant = "reconrevenant.cli:main"
