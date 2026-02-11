@@ -11,8 +11,13 @@ requires-python = ">=3.10"
 license = "MIT"
 
 authors = [
-  { name = "haunter - haunter-actual@outlook.com / https://haunter-actual.github.io" }
+  { name = "haunter", email = "haunter-actual@outlook.com"  }
 ]
+
+[project.urls]
+Homepage = "https://haunter-actual.github.io"
+Source = "https://github.com/haunter-actual/recon-revenant"
+LinkedIn = "https://www.linkedin.com/in/gsmaciel"
 
 dependencies = []
 

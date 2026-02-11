@@ -5,10 +5,26 @@ def generate_mermaid(chain):
     lines.append("```")
     return "\n".join(lines)
 
+BANNER = """
+______                      ______                                 _
+| ___ \                     | ___ \                               | |
+| |_/ /___  ___ ___  _ __   | |_/ /_____   _____ _ __   __ _ _ __ | |_
+|    // _ \/ __/ _ \| '_ \  |    // _ \ \ / / _ \ '_ \ / _` | '_ \| __|
+| |\ \  __/ (_| (_) | | | | | |\ \  __/\ V /  __/ | | | (_| | | | | |_
+\_| \_\___|\___\___/|_| |_| \_| \_\___| \_/ \___|_| |_|\__,_|_| |_|\__|
+
+
+Recon Revenant — Offline Recon Deterministic & Local AI Reasoning Engine
+Author: haunter-actual
+Website: https://haunter-actual.github.io
+LinkedIn: gsmaciel
+"""
+
 
 def generate_report(signals, chain, missed):
     lines = []
 
+    lines.append("```\n" + BANNER.strip() + "\n```\n")
     lines.append("# Recon Revenant Report\n")
 
     lines.append("## Attack Chain")

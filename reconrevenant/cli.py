@@ -13,6 +13,21 @@ from reconrevenant.ai.engine import run_local_model
 from reconrevenant.ai.merge import merge_ai_insights
 from reconrevenant.ai.safety import prompt_is_safe, output_is_safe
 
+BANNER = r"""
+______                      ______                                 _   
+| ___ \                     | ___ \                               | |  
+| |_/ /___  ___ ___  _ __   | |_/ /_____   _____ _ __   __ _ _ __ | |_ 
+|    // _ \/ __/ _ \| '_ \  |    // _ \ \ / / _ \ '_ \ / _` | '_ \| __|
+| |\ \  __/ (_| (_) | | | | | |\ \  __/\ V /  __/ | | | (_| | | | | |_ 
+\_| \_\___|\___\___/|_| |_| \_| \_\___| \_/ \___|_| |_|\__,_|_| |_|\__|
+                                                                                                                                              
+
+Recon Revenant — Offline Recon Deterministic & Local AI Reasoning Engine
+Author: haunter-actual
+https://haunter-actual.github.io
+"""
+
+
 
 def main():
     parser = argparse.ArgumentParser(description="Recon Revenant")
@@ -28,7 +43,7 @@ def main():
 
     args = parser.parse_args()
 
-    print("[INFO] Recon Revenant")
+    print(BANNER)
     print("[INFO] Offline mode enforced")
     print("[INFO] No data leaves this machine")
     print("[INFO] Linux + Windows supported")
