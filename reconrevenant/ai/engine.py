@@ -1,36 +1,46 @@
 import subprocess
+import time
 from typing import Optional
 
 
 def run_local_model(prompt: str, model: str, timeout: int) -> Optional[str]:
     """
-    Runs an Ollama model and returns stdout.
-    Also prints debug info if output is empty.
+    Stream output from Ollama and return the first completed response.
+    Prevents killing slow local models prematurely.
     """
     try:
-        proc = subprocess.run(
+        proc = subprocess.Popen(
             ["ollama", "run", model, prompt],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
-            timeout=timeout,
         )
 
-        stdout = proc.stdout.strip()
-        stderr = proc.stderr.strip()
+        start = time.time()
+        output_lines = []
 
-        # ---- DEBUG VISIBILITY ----
-        if not stdout:
-            print("[DEBUG] Ollama returned EMPTY stdout")
-            if stderr:
-                print("[DEBUG] Ollama stderr:")
-                print(stderr)
+        # Read line-by-line until timeout or process ends
+        while True:
+            if proc.stdout is None:
+                break
 
-        return stdout if stdout else None
+            line = proc.stdout.readline()
 
-    except subprocess.TimeoutExpired:
-        print("[DEBUG] Ollama timed out")
-        return None
+            if line:
+                output_lines.append(line.rstrip())
+
+            # Stop if process finished
+            if proc.poll() is not None:
+                break
+
+            # Stop if timeout exceeded
+            if time.time() - start > timeout:
+                proc.kill()
+                print("[DEBUG] Ollama streaming timeout reached")
+                break
+
+        output = "\n".join(output_lines).strip()
+        return output if output else None
 
     except Exception as e:
         print(f"[DEBUG] Ollama execution error: {e}")
