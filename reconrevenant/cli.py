@@ -26,11 +26,11 @@ from reconrevenant.ai.safety import prompt_is_safe, output_is_safe
 
 
 BANNER = r"""
-______                      ______                                 _   
-| ___ \                     | ___ \                               | |  
-| |_/ /___  ___ ___  _ __   | |_/ /_____   _____ _ __   __ _ _ __ | |_ 
+______                      ______                                 _
+| ___ \                     | ___ \                               | |
+| |_/ /___  ___ ___  _ __   | |_/ /_____   _____ _ __   __ _ _ __ | |_
 |    // _ \/ __/ _ \| '_ \  |    // _ \ \ / / _ \ '_ \ / _` | '_ \| __|
-| |\ \  __/ (_| (_) | | | | | |\ \  __/\ V /  __/ | | | (_| | | | | |_ 
+| |\ \  __/ (_| (_) | | | | | |\ \  __/\ V /  __/ | | | (_| | | | | |_
 \_| \_\___|\___\___/|_| |_| \_| \_\___| \_/ \___|_| |_|\__,_|_| |_|\__|
 
 Recon Revenant — Offline Recon Deterministic & Local AI Reasoning Engine
@@ -44,7 +44,7 @@ def ollama_available() -> bool:
     return shutil.which("ollama") is not None
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         description="Recon Revenant — Offline deterministic & local-AI recon reasoning engine"
     )
@@ -57,17 +57,15 @@ def main():
     # Local AI (optional)
     parser.add_argument("--ai", action="store_true", help="Enable local AI reasoning via Ollama")
     parser.add_argument("--model", default="llama3", help="Local Ollama model name")
-
-parser.add_argument(
-    "--ai-timeout",
-    type=int,
-    default=0,
-    help="AI timeout seconds (0 = wait indefinitely; recommended for local models)",
-)
+    parser.add_argument(
+        "--ai-timeout",
+        type=int,
+        default=0,
+        help="AI timeout seconds (0 = wait indefinitely)",
+    )
 
     args = parser.parse_args()
 
-    # Banner
     print(BANNER)
 
     # Require at least one data source
