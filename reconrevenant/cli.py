@@ -57,7 +57,13 @@ def main():
     # Local AI (optional)
     parser.add_argument("--ai", action="store_true", help="Enable local AI reasoning via Ollama")
     parser.add_argument("--model", default="llama3", help="Local Ollama model name")
-    parser.add_argument("--ai-timeout", type=int, default=120, help="AI inference timeout (seconds)")
+
+parser.add_argument(
+    "--ai-timeout",
+    type=int,
+    default=0,
+    help="AI timeout seconds (0 = wait indefinitely; recommended for local models)",
+)
 
     args = parser.parse_args()
 
