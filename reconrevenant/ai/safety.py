@@ -1,13 +1,11 @@
 import re
 
-# Only block clearly dangerous output content
-UNSAFE_OUTPUT_PATTERNS = [
-    r"\bexploit\b",
-    r"\bpayload\b",
-    r"\bcurl\b|\bwget\b",
-    r"```",  # code blocks
+UNSAFE_INSTRUCTION_PATTERNS = [
+    r"\b(curl|wget)\b.+http",        # download commands
+    r"\bchmod\s+\+x\b",              # execution prep
+    r"\bpython\s+-c\b",              # inline execution
+    r"```",                          # code blocks
 ]
-
 
 def prompt_is_safe(text: str) -> bool:
     """
@@ -29,6 +27,8 @@ def prompt_is_safe(text: str) -> bool:
 
 
 def output_is_safe(text: str) -> bool:
-    """Reject exploit/payload/command-style AI output."""
-    return not any(re.search(p, text, re.I) for p in UNSAFE_OUTPUT_PATTERNS)
-
+    """
+    Allow analytical reasoning.
+    Block executable or download instructions.
+    """
+    return not any(re.search(p, text, re.I) for p in UNSAFE_INSTRUCTION_PATTERNS)
