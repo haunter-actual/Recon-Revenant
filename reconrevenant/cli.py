@@ -1,5 +1,17 @@
 #!/usr/bin/env python3
+"""
+Recon Revenant CLI
+
+Offline reconnaissance reasoning engine supporting:
+
+• Deterministic attack-path inference
+• Optional local-only AI reasoning (Ollama)
+• Flexible input: Nmap, PEAS, or both
+• Zero telemetry, zero cloud, NDA-safe execution
+"""
+
 import argparse
+import shutil
 
 from reconrevenant.parser_nmap import parse_nmap
 from reconrevenant.parser_enum import parse_enum
@@ -7,11 +19,11 @@ from reconrevenant.signals_builder import build_signals
 from reconrevenant.reasoner import infer_attack_chain, infer_missed_enum
 from reconrevenant.report import generate_report
 
-# AI imports
 from reconrevenant.ai.prompt import build_prompt
 from reconrevenant.ai.engine import run_local_model
 from reconrevenant.ai.merge import merge_ai_insights
 from reconrevenant.ai.safety import prompt_is_safe, output_is_safe
+
 
 BANNER = r"""
 ______                      ______                                 _   
@@ -20,7 +32,6 @@ ______                      ______                                 _
 |    // _ \/ __/ _ \| '_ \  |    // _ \ \ / / _ \ '_ \ / _` | '_ \| __|
 | |\ \  __/ (_| (_) | | | | | |\ \  __/\ V /  __/ | | | (_| | | | | |_ 
 \_| \_\___|\___\___/|_| |_| \_| \_\___| \_/ \___|_| |_|\__,_|_| |_|\__|
-                                                                                                                                              
 
 Recon Revenant — Offline Recon Deterministic & Local AI Reasoning Engine
 Author: haunter-actual
@@ -28,59 +39,77 @@ https://haunter-actual.github.io
 """
 
 
+def ollama_available() -> bool:
+    """Check whether a local Ollama runtime exists on PATH."""
+    return shutil.which("ollama") is not None
+
 
 def main():
-    parser = argparse.ArgumentParser(description="Recon Revenant")
+    parser = argparse.ArgumentParser(
+        description="Recon Revenant — Offline deterministic & local-AI recon reasoning engine"
+    )
 
-    parser.add_argument("--nmap", required=True)
-    parser.add_argument("--enum", required=True)
-    parser.add_argument("--out", default="report.md")
+    # Flexible inputs
+    parser.add_argument("--nmap", help="Path to Nmap output file")
+    parser.add_argument("--enum", help="Path to LinPEAS/WinPEAS output file")
+    parser.add_argument("--out", default="report.md", help="Output Markdown report file")
 
-    # AI flags
-    parser.add_argument("--ai", action="store_true", help="Enable local AI reasoning")
-    parser.add_argument("--model", default="llama3")
-    parser.add_argument("--ai-timeout", type=int, default=10)
+    # Local AI (optional)
+    parser.add_argument("--ai", action="store_true", help="Enable local AI reasoning via Ollama")
+    parser.add_argument("--model", default="llama3", help="Local Ollama model name")
+    parser.add_argument("--ai-timeout", type=int, default=10, help="AI inference timeout (seconds)")
 
     args = parser.parse_args()
 
+    # Banner
     print(BANNER)
-    print("[INFO] Offline mode enforced")
-    print("[INFO] No data leaves this machine")
-    print("[INFO] Linux + Windows supported")
 
-    with open(args.nmap) as f:
-        nmap_txt = f.read()
+    # Require at least one data source
+    if not args.nmap and not args.enum:
+        parser.error("Provide --nmap, --enum, or both.")
 
-    with open(args.enum) as f:
-        enum_txt = f.read()
+    nmap_sigs = {}
+    enum_sigs = {}
 
-    signals = build_signals(parse_nmap(nmap_txt), parse_enum(enum_txt))
+    if args.nmap:
+        with open(args.nmap, encoding="utf-8", errors="ignore") as f:
+            nmap_sigs = parse_nmap(f.read())
 
-    baseline_chain = infer_attack_chain(signals)
+    if args.enum:
+        with open(args.enum, encoding="utf-8", errors="ignore") as f:
+            enum_sigs = parse_enum(f.read())
+
+    signals = build_signals(nmap_sigs, enum_sigs)
+
+    # Deterministic reasoning always runs
+    chain = infer_attack_chain(signals)
     missed = infer_missed_enum(signals)
 
-    # ---------- Optional AI ----------
+    # Optional local AI reasoning
     if args.ai:
-        print("[INFO] Local AI reasoning enabled")
-
-        prompt = build_prompt(signals)
-
-        if not prompt_is_safe(prompt):
-            print("[WARN] Prompt failed safety check — skipping AI")
+        if not ollama_available():
+            print("[WARN] Ollama not installed — AI reasoning skipped.")
+            print("Install from: https://ollama.com")
+            print("Then run: ollama pull llama3")
         else:
-            ai_output = run_local_model(prompt, args.model, args.ai_timeout)
+            prompt = build_prompt(signals)
 
-            if ai_output and output_is_safe(ai_output):
-                baseline_chain = merge_ai_insights(baseline_chain, ai_output)
+            if not prompt_is_safe(prompt):
+                print("[WARN] Prompt failed safety validation — skipping AI.")
             else:
-                print("[WARN] AI output unsafe or empty — ignored")
+                ai_out = run_local_model(prompt, args.model, args.ai_timeout)
 
-    report = generate_report(signals, baseline_chain, missed)
+                if ai_out and output_is_safe(ai_out):
+                    chain = merge_ai_insights(chain, ai_out)
+                else:
+                    print("[WARN] AI output unsafe or empty — ignored.")
 
-    if args.ai:
-        report += "\n\n---\nGenerated using **local offline AI**. No data left the system.\n"
+    report = generate_report(signals, chain, missed)
 
-    with open(args.out, "w") as f:
+    if args.ai and ollama_available():
+        report += "\n\n---\nGenerated using local offline AI reasoning.\n"
+
+    with open(args.out, "w", encoding="utf-8") as f:
         f.write(report)
 
     print(f"[+] Report written to {args.out}")

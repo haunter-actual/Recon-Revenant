@@ -29,7 +29,7 @@ Recon Revenant trains **human reasoning**, not automation. This isn't a shortcut
 Privacy-safe, offline reconnaissance and post-enumeration reasoning tool  
 for **Linux and Windows** penetration-testing labs.
 
-Designed for **OffSec OSCP / TCM Security PNPT / Zero-Point Security CRTO-style learning**
+Designed for **OffSec OSCP PEN-200 Students**
 
 - Deterministic baseline reasoning
 - Optional **local-only AI explanation layer**
@@ -83,16 +83,17 @@ recon-revenant --ai --model llama3
 recon-revenant --ai-timeout 15
 ```
 
+## Privacy
+
 ### Privacy Controls
 
-* Privacy Guarantees
 * No network communication
 * No telemetry or analytics
 * No cloud APIs
 * Raw enumeration data never leaves memory
 * AI sees signals only, never real data
 
-Safe for:
+### Safe for:
 * proprietary labs
 * client engagements
 * air-gapped systems
