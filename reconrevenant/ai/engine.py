@@ -4,20 +4,23 @@ from typing import Optional
 
 def run_local_model(prompt: str, model: str, timeout: int) -> Optional[str]:
     """
-    Calls Ollama locally.
-    Returns text or None on failure.
+    Execute a local Ollama model in non-interactive mode.
+    Returns stripped stdout text or None.
     """
-
     try:
         proc = subprocess.run(
-            ["ollama", "run", model],
-            input=prompt.encode(),
+            ["ollama", "run", model, prompt],
             stdout=subprocess.PIPE,
             stderr=subprocess.DEVNULL,
             timeout=timeout,
+            text=True,
         )
-        return proc.stdout.decode().strip() or None
 
+        output = proc.stdout.strip()
+        return output if output else None
+
+    except subprocess.TimeoutExpired:
+        return None
     except Exception:
         return None
 
