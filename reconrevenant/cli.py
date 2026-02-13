@@ -38,10 +38,8 @@ Author: haunter-actual
 https://haunter-actual.github.io
 """
 
-
 def ollama_available() -> bool:
-    """Check whether a local Ollama runtime exists on PATH."""
-    return shutil.which("ollama") is not None
+    return shutil.which("ollama") is not None or shutil.which("ollama.exe") is not None
 
 
 def main() -> None:
@@ -76,11 +74,13 @@ def main() -> None:
     enum_sigs = {}
 
     if args.nmap:
-        with open(args.nmap, encoding="utf-8", errors="ignore") as f:
+        from pathlib import Path
+        with Path(args.nmap).open("r", encoding="utf-8", errors="ignore") as f:
             nmap_sigs = parse_nmap(f.read())
 
     if args.enum:
-        with open(args.enum, encoding="utf-8", errors="ignore") as f:
+        from pathlib import Path
+        with Path(args.enum).open("r", encoding="utf-8", errors="ignore") as f:
             enum_sigs = parse_enum(f.read())
 
     signals = build_signals(nmap_sigs, enum_sigs)

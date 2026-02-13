@@ -1,23 +1,27 @@
 import subprocess
+import shutil
 from typing import Optional
+
+
+def _ollama_cmd() -> Optional[str]:
+    """
+    Locate Ollama executable cross-platform.
+    """
+    return shutil.which("ollama") or shutil.which("ollama.exe")
 
 
 def run_local_model(prompt: str, model: str, timeout: int | None) -> Optional[str]:
     """
-    Execute Ollama in fully blocking mode.
-
-    Rationale:
-    - Local LLM first-token latency is unpredictable.
-    - Hard timeouts break legitimate slow inference.
-    - User can cancel safely with Ctrl-C.
-
-    Therefore:
-    → No enforced timeout by default.
+    Execute Ollama locally in a cross-platform safe way.
     """
+
+    cmd = _ollama_cmd()
+    if not cmd:
+        return None
 
     try:
         proc = subprocess.run(
-            ["ollama", "run", model, prompt],
+            [cmd, "run", model, prompt],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,

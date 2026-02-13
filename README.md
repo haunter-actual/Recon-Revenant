@@ -1,12 +1,12 @@
+```
 ______                      ______                                 _   
 | ___ \                     | ___ \                               | |  
 | |_/ /___  ___ ___  _ __   | |_/ /_____   _____ _ __   __ _ _ __ | |_ 
 |    // _ \/ __/ _ \| '_ \  |    // _ \ \ / / _ \ '_ \ / _` | '_ \| __|
 | |\ \  __/ (_| (_) | | | | | |\ \  __/\ V /  __/ | | | (_| | | | | |_ 
 \_| \_\___|\___\___/|_| |_| \_| \_\___| \_/ \___|_| |_|\__,_|_| |_|\__|
-                                                                       
-                                                                       
 
+```                                                                                                                                              
 # Recon Revenant
 
 **Offline reconnaissance deterministic & local AI reasoning engine for Linux & Windows labs or engagements. Perfect for students learning to become an Adversary.**
@@ -126,6 +126,11 @@ recon-revenant --nmap nmap.txt --enum winpeas.txt
 ```
 
 ## Versioning
-* v0.2.0 — deterministic reasoning engine
-* v0.3.0 — optional privacy-safe local AI reasoning
-* v0.3.1 - housekeeping and test cases
+* v0.5.0 — Flexible input handling (Nmap or enum)
+* v0.5.1 — Banner + CLI polish + AI runtime detection
+* v0.5.2 — Prompt safety fix
+* v0.5.3 — Output safety refinement
+* v0.5.4 — Correct Ollama invocation
+* v0.5.5 — Streaming/timeout stability
+* v0.6.0 — Stable local AI execution (no forced timeout)
+* v0.7.0 — Windows host support + cross-platform AI engine ← latest
